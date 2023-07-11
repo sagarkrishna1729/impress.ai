@@ -5,8 +5,12 @@ import requests
 import random
 from django.utils.decorators import method_decorator
 from django.http.response import HttpResponse
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect
+from .models import ButtonCall
+from django.db import models
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
 
 def chat(request):
     context = {}
@@ -41,4 +45,35 @@ def respond_to_websockets(message):
         result_message['text'] = "I don't know any responses for that. If you're interested in yo mama jokes tell me fat, stupid or dumb."
 
     return result_message
-    
+
+def user_calls(request):
+    users = ButtonCall.objects.values('user__username','button').annotate(total_calls=models.Sum('call_count'))
+    return render(request, 'chatbot_tutorial/user_calls.html', {'users': users})
+
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('chat')
+    else:
+        form = UserCreationForm()
+    return render(request, 'chatbot_tutorial/signup.html', {'form': form})
+
+def user_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('chat')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'chatbot_tutorial/login.html', {'form': form})
+
+def user_logout(request):
+    logout(request)
+    return render(request,'chatbot_tutorial/logout.html')

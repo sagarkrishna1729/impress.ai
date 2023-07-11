@@ -1,0 +1,21 @@
+body {
+    padding: 50px;
+}
+.user-calls-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-calls-table th,
+  .user-calls-table td {
+    padding: 8px;
+    border: 1px solid #000000;
+  }
+  
+  .user-calls-table th {
+    background-color: #f2f2f2;
+  }
+
+
+  
+ 

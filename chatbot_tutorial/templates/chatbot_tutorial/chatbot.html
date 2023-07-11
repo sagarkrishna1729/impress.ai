@@ -13,6 +13,7 @@
 
         <link rel="stylesheet" href="{% static 'chatbot_tutorial/bootstrap/css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'chatbot_tutorial/css/chat.css' %}">
+        
        
         <link href="{% static 'chatbot_tutorial/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -22,6 +23,18 @@
     </head>
     <body>
         <!-- Wrap all page content here -->
+        <nav class="navbar">
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">Log out</a></li>
+                {% else %}
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                    <li><a href="{% url 'login' %}">Log In</a></li>
+                {% endif %}
+                    
+
+            </ul>
+        </nav>
 
         <div id="wrap" class="BotMainDiv" ng-controller="ChatCtrl">
             <!-- Begin page content -->
@@ -40,7 +53,7 @@
         
             <div class="navbar navbar-default navbar-fixed-bottom non-error">
                 <div class="container-fluid botAccentColor" id="bottom-box">
-                    
+                    <!--
                     <div class="row" id="send-box">
                         
                         <div id="messageToSend" contenteditable="true" class="pull-left" data-ph="Type your message..."></div>
@@ -53,6 +66,19 @@
                         </div>
 
                     </div>
+                    -->
+                    
+                    <div id="message-container"></div>
+                    {% if user.is_authenticated %}
+                        <div id="button-container">
+                            <button id="stupid-button">Stupid</button>
+                            <button id="fat-button">Fat</button>
+                            <button id="dumb-button">Dumb</button>
+                        </div>
+                    {% else %}
+                        <div id="warning-message">Please log in to access the buttons.</div>
+                    {% endif %}
+
                     
                 </div>
                     
@@ -129,6 +155,41 @@
             // Calls the websocket connect channel
             var chatsock = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/chat/stream/test-chat");
 
+            // new block created
+            
+            // Button click event handlers
+            document.getElementById("stupid-button").addEventListener("click", function() {
+                var currentUser = '{{ request.user.username }}';
+                sendMessage("stupid",currentUser);
+            });
+            
+            document.getElementById("fat-button").addEventListener("click", function() {
+                var currentUser = '{{ request.user.username }}';
+                sendMessage("fat",currentUser);
+            });
+
+            document.getElementById("dumb-button").addEventListener("click", function() {
+                var currentUser = '{{ request.user.username }}';
+                sendMessage("dumb",currentUser);
+            });
+
+            function sendMessage(text,username) {
+                
+                var message = {
+                    'text': text,
+                    'command' : 'send',
+                    'user': username
+                };
+                chatsock.send(JSON.stringify(message));
+                console.log(typeof message['user'])
+            }
+
+           
+              
+            
+            
+
+            // new block ends
 
             $("#messageToSend").keypress(function (e) {
                 var key = e.which;                

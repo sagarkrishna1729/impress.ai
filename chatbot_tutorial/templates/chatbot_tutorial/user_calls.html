@@ -1,0 +1,36 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Calls</title>
+
+    <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link rel="shortcut icon" href="{% static 'chatbot_tutorial/favicon.ico' %}" type="image/x-icon">
+        <link rel="icon" href="{% static 'chatbot_tutorial/favicon.ico' %}" type="image/x-icon">
+
+        <link rel="stylesheet" href="{% static 'chatbot_tutorial/bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'chatbot_tutorial/css/user_calls.css' %}">
+       
+        <link href="{% static 'chatbot_tutorial/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+        </head>
+<body>
+    <h1>User Calls</h1>
+    <table class="user-calls-table">
+        <tr>
+            <th>Username</th>
+            <th>Button</th>
+            <th>Total Calls</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.user__username }}</td>
+            <td>{{ user.button }}</td>
+            <td>{{ user.total_calls }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

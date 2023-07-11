@@ -1,6 +1,8 @@
 import json
+from .models import ButtonCall
 from channels import Channel
 from channels.sessions import enforce_ordering
+from django.contrib.auth.models import User
 
 from .views import respond_to_websockets
 
@@ -50,7 +52,6 @@ def chat_leave(message):
     #   remove this reply_channel from the group associated with the room
     pass
 
-
 def chat_send(message):
 
     # First send the candidate message in the right format for
@@ -63,7 +64,6 @@ def chat_send(message):
     message.reply_channel.send({
         'text': json.dumps(message_to_send_content)
     })
-
     # Call my view to actually construct the reseponse to
     # the query
     response = respond_to_websockets(
@@ -75,3 +75,11 @@ def chat_send(message):
     message.reply_channel.send({
         'text': json.dumps(response)
     })
+    
+    #for saving the number of button calls
+    button = message['text']
+    user = User.objects.get(username=message['user'])
+    print('hi',)
+    button_call, created = ButtonCall.objects.get_or_create(button=button,user=user)
+    button_call.call_count += 1
+    button_call.save()
