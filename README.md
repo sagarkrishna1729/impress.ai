@@ -29,3 +29,7 @@ And start the server with
 `python manage.py runserver`
 
 You should now be able to go to localhost:8000/chat/ and chat with the bot
+
+You should register with a username and password for chatting with the bot.
+
+You can go to localhost:8000/user_calls/ and see the number of calls different users have made.
